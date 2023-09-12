@@ -124,9 +124,11 @@ struct MyWidgetEntryView : View {
                   .shadow(color: .gray, radius: 15, x: 7, y: 7)
                   .minimumScaleFactor(0.5)
               }
+              .widgetURL(URL(string: "widget-deeplink://WidgetScreen"))
             }
 
         }.padding(.all, 10)
+        .widgetURL(URL(string: "widget-deeplink://WidgetScreen"))
           
       }
 }

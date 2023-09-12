@@ -1,9 +1,11 @@
-import { View, Text, Platform, TouchableOpacity, NativeModules } from 'react-native'
+import { View, Text, Platform, TouchableOpacity, NativeModules, Button } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 const appGroupIdentifier = "group.com.app.together"
-const { RNSharedWidget } = NativeModules;
+const { RNSharedWidget, WeatherWidgetModule } = NativeModules;
 
 const userData = {
   c_name: 'reddok',
@@ -11,7 +13,12 @@ const userData = {
   c_email: 'reddokk@gmail.com',
 }
 
-const App = () => {
+const ff = () => {
+
+  // 이런방식의 콜?
+  const refreshAllWidgets = React.useCallback(() => {
+    WeatherWidgetModule.refreshAllWidgets()
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -99,4 +106,114 @@ const App = () => {
   )
 }
 
-export default App
+function HomeScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button
+        title="Go to WidgetScreen"
+        onPress={() => navigation.navigate('WidgetScreen')}
+      />
+    </View>
+  );
+}
+
+function WidgetScreen({ navigation }) {
+
+  const [mydata, setMydata] = useState(userData);
+  const refreshAllWidgets = React.useCallback(async() => {
+    // WeatherWidgetModule.refreshAllWidgets()
+    const date = new Date();
+    setMydata({
+      c_name: date.toISOString(),
+      c_age: 11234,
+      c_email: 'reddokk@hanmail.net',
+    })
+    await RNSharedWidget.setData(
+      'myAppData',
+      JSON.stringify(mydata),
+      (_status) => {
+        // log callback in case of success/error
+        //console.log(_status);
+      }
+    );
+  }, []);
+
+  const reload = async() => {
+    const date = new Date();
+    setMydata({
+      c_name: date.toISOString(),
+      c_age: 11234,
+      c_email: 'reddokk@hanmail.net',
+    })
+    await RNSharedWidget.setData(
+      'myAppData',
+      JSON.stringify(mydata),
+      (_status) => {}
+    );
+  }
+
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button
+        title="Refresh All Widgets"
+        onPress={reload}
+      />
+      <Button
+        title="Go to Notifications"
+        onPress={() => navigation.navigate('Notifications')}
+      />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
+  );
+}
+
+function NotificationsScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button
+        title="Go to Settings"
+        onPress={() => navigation.navigate('Settings')}
+      />
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
+  );
+}
+
+function SettingsScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <Button title="Go back" onPress={() => navigation.goBack()} />
+    </View>
+  );
+}
+
+const Stack = createStackNavigator();
+
+function MyStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} />
+      <Stack.Screen name="WidgetScreen" component={WidgetScreen} />
+      <Stack.Screen name="Settings" component={SettingsScreen} />
+    </Stack.Navigator>
+  );
+}
+
+export default function App() {
+  return (
+    <NavigationContainer
+      linking={{
+        prefixes: [
+          'widget-deeplink://',
+        ],
+        config: {
+          screens: {
+            WidgetScreen: 'WidgetScreen'
+          },
+        }
+      }}>
+      <MyStack />
+    </NavigationContainer>
+  );
+}
