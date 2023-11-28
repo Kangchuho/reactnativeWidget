@@ -1,4 +1,4 @@
-import { View, Text, Platform, TouchableOpacity, NativeModules, Button } from 'react-native'
+import { View, Text, Platform, TouchableOpacity, NativeModules, Button, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import SharedGroupPreferences from 'react-native-shared-group-preferences'
 import { NavigationContainer } from '@react-navigation/native';
@@ -143,7 +143,7 @@ function WidgetScreen({ navigation }) {
     setMydata({
       c_name: date.toISOString(),
       c_age: 11234,
-      c_email: 'reddokk@hanmail.net',
+      c_email: emailvalue,
     })
     await RNSharedWidget.setData(
       'myAppData',
@@ -152,8 +152,14 @@ function WidgetScreen({ navigation }) {
     );
   }
 
+  const [emailvalue, setEmailvalue] = useState('reddokk@hanmail.net')
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+      <TextInput 
+      value={emailvalue} onChangeText={setEmailvalue}
+      className='w-full h-10 px-2 py-1 '
+      />
       <Button
         title="Refresh All Widgets"
         onPress={reload}
