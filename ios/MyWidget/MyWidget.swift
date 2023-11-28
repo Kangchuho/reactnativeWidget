@@ -74,62 +74,80 @@ struct MyWidgetEntryView : View {
   @Environment(\.widgetFamily) var family
   
       var body: some View {
-         HStack(spacing: 20) {
-          // Color(red: 0.09, green: 0.63, blue: 0.52)
-            VStack(alignment: .leading) {
-              Image("contact")
-                  .resizable()
-                  .aspectRatio(contentMode: .fit)
-                  .frame(width: 25, height: 25, alignment: .trailing )
-                  .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
-                  .overlay(
-                      Circle().stroke(Color.black)
-                  )
-            
-              
-              Text(entry.name)
-              .font(.system(size:10))
-              .bold()
-              
-              Text("\(entry.age)" + " years old")
-              .font(.system(size:10))
-              .bold()
-            
-              
-              Text(entry.email)
-              .font(.system(size:10))
-            
-              
-              Text(entry.date, style: .timer)
-                .bold()
-                .font(.system(size: 50))
-                .foregroundColor(Color.black)
-                .shadow(color: .gray, radius: 15, x: 7, y: 7)
-                .minimumScaleFactor(0.5)
-             
-            
-            }
-            if family == .systemMedium {
-              VStack(alignment: .center) {
-                Text("Last Updated")
-                  .bold()
-                  .font(.system(size: 12))
-                  .foregroundColor(redColor)
-                  .shadow(color: .gray, radius: 15, x: 7, y: 7)
-                  .minimumScaleFactor(0.5)
-                Text("Today")
-                  .bold()
-                  .font(.system(size: 40))
-                  .foregroundColor(Color.black)
-                  .shadow(color: .gray, radius: 15, x: 7, y: 7)
-                  .minimumScaleFactor(0.5)
-              }
-              .widgetURL(URL(string: "widget-deeplink://WidgetScreen"))
-            }
+         HStack(spacing: 0) {
+           VStack(alignment: .leading) {
+             GeometryReader { geometry in
+               VStack(alignment: .leading){
+                 HStack() {
+                   Image("contact")
+                     .resizable()
+                     .aspectRatio(contentMode: .fit)
+                     .frame(width: 22, height: 22, alignment: .center )
+                     .clipShape(/*@START_MENU_TOKEN@*/Circle()/*@END_MENU_TOKEN@*/)
+//                     .overlay(
+//                      Circle().stroke(Color.black)
+//                     )
+                   
+                   Text("남광 할인마트")
+                     .font(.system(size:20))
+                     .foregroundColor(Color.white)
+                     .bold()
+                 }
+                 
+               }
+               .frame(width: geometry.size.width, height: 40 )
+               .background(Color(red: 57/255, green: 129/255, blue: 202/255))
+             }
+             // Color(red: 0.09, green: 0.63, blue: 0.52)
+               VStack(alignment: .leading) {
+                 
+                 Text(entry.name)
+                 .font(.system(size:10))
+                 .bold()
+                 
+                 Text("\(entry.age)" + " years old")
+                 .font(.system(size:10))
+                 .bold()
+               
+                 
+                 Text(entry.email)
+                 .font(.system(size:10))
+               
+                 
+                 Text(entry.date, style: .timer)
+                   .bold()
+                   .font(.system(size: 50))
+                   .foregroundColor(Color.black)
+                   .shadow(color: .gray, radius: 15, x: 7, y: 7)
+                   .minimumScaleFactor(0.5)
+                
+               
+               }
+               if family == .systemMedium {
+                 //미디움 사즈 기본!
+                 //상단 타이틀바, 배경색(프라이머리) 아이콘 + 타이틀(흰색) + 리로드 아이콘
+                 VStack(alignment: .center) {
+                   Text("Last Updated")
+                     .bold()
+                     .font(.system(size: 12))
+                     .foregroundColor(redColor)
+                     .shadow(color: .gray, radius: 15, x: 7, y: 7)
+                     .minimumScaleFactor(0.5)
+                   Text("Today")
+                     .bold()
+                     .font(.system(size: 40))
+                     .foregroundColor(Color.black)
+                     .shadow(color: .gray, radius: 15, x: 7, y: 7)
+                     .minimumScaleFactor(0.5)
+                 }
+               
+               }
 
-        }.padding(.all, 10)
-        .widgetURL(URL(string: "widget-deeplink://WidgetScreen"))
-          
+           }
+           .widgetURL(URL(string: "widget-deeplink://WidgetScreen"))
+             
+           }
+
       }
 }
 
