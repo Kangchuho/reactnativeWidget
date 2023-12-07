@@ -72,7 +72,10 @@ struct MyWidgetEntryView : View {
   var entry: Provider.Entry
   var redColor = Color(UIColor(displayP3Red: 1, green: 15/255, blue: 83/255, alpha: 1))
   @Environment(\.widgetFamily) var family
-  
+  @State private var remainingSeconds2 = 60 // 1분 = 60초
+  let timer2 = Timer.publish(every: 1, on: .main, in: .default).autoconnect()
+
+
       var body: some View {
          HStack(spacing: 0) {
            VStack(alignment: .leading) {
@@ -113,14 +116,40 @@ struct MyWidgetEntryView : View {
                  Text(entry.email)
                  .font(.system(size:10))
                
-                 
+               Text("\(entry.date)")
+                 .font(.system(size:10))
+               
+              HStack() {
+
+                let currentDate = Date()
+                let calendar = Calendar.current
+                let timeDifference = calendar.dateComponents([.minute, .second], from: currentDate, to: entry.date)
+
+                // 남은 분과 초를 가져옵니다.
+                let remainingMinutes = timeDifference.minute ?? 0
+                let remainingSeconds = timeDifference.second ?? 0
+
+                Text("\(remainingMinutes):\(String(format: "%02d", remainingSeconds))")
+                    .bold()
+                    .font(.system(size: 25))
+                    .foregroundColor(Color.black)
+                    .minimumScaleFactor(0.5)
+
                  Text(entry.date, style: .timer)
                    .bold()
-                   .font(.system(size: 50))
+                   .font(.system(size: 25))
                    .foregroundColor(Color.black)
                    .shadow(color: .gray, radius: 15, x: 7, y: 7)
                    .minimumScaleFactor(0.5)
+
+                Text("\(remainingSeconds / 60):\(String(format: "%02d", remainingSeconds % 60))")
+                .bold()
+                .font(.system(size: 25))
+                .foregroundColor(Color.black)
+                .minimumScaleFactor(0.5)
                 
+              }
+               
                
                }
                if family == .systemMedium {
